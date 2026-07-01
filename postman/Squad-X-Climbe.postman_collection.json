@@ -1,0 +1,1000 @@
+{
+  "info": {
+    "name": "Squad-X | Climbe",
+    "description": "Climbe API — coleção completa.\n\nFluxo: rode **Auth > Login** primeiro (preenche `access_token`). Os demais requests herdam o Bearer automaticamente.\n\nVariáveis: `base_url`, `admin_email`, `admin_password`, `access_token` e os `id_*` usados nos path params.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "admin_email",
+      "value": "admin@climbe.local"
+    },
+    {
+      "key": "admin_password",
+      "value": "change-me-admin-password"
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "id_cargo",
+      "value": "1"
+    },
+    {
+      "key": "id_usuario",
+      "value": "1"
+    },
+    {
+      "key": "id_empresa",
+      "value": "1"
+    },
+    {
+      "key": "id_proposta",
+      "value": "1"
+    },
+    {
+      "key": "id_contrato",
+      "value": "1"
+    },
+    {
+      "key": "id_documento",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Liveness",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "App de pé. Não toca o banco."
+          },
+          "response": []
+        },
+        {
+          "name": "Readiness (DB)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health/db",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health",
+                "db"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Verifica o banco via SELECT 1."
+          },
+          "response": []
+        }
+      ],
+      "description": "Sondas de saúde. Sem autenticação."
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "username",
+                  "value": "{{admin_email}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "{{admin_password}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "OAuth2 password flow (form-urlencoded: username/password). Em caso de sucesso, salva o access_token na variável da collection."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const json = pm.response.json();",
+                  "    pm.collectionVariables.set('access_token', json.access_token);",
+                  "    console.log('access_token salvo na collection.');",
+                  "} else {",
+                  "    console.log('Login falhou:', pm.response.code, pm.response.text());",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Dados do usuário autenticado."
+          },
+          "response": []
+        }
+      ],
+      "description": "Autenticação JWT."
+    },
+    {
+      "name": "Cargos",
+      "item": [
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cargos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cargos"
+              ]
+            },
+            "description": "Qualquer usuário autenticado."
+          },
+          "response": []
+        },
+        {
+          "name": "Criar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cargos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cargos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome_cargo\": \"Analista Financeiro\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "admin"
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cargos/{{id_cargo}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cargos",
+                "{{id_cargo}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome_cargo\": \"Analista Sênior\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "admin"
+          },
+          "response": []
+        },
+        {
+          "name": "Remover",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cargos/{{id_cargo}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cargos",
+                "{{id_cargo}}"
+              ]
+            },
+            "description": "admin"
+          },
+          "response": []
+        }
+      ],
+      "description": "CRUD de cargos."
+    },
+    {
+      "name": "Usuários",
+      "item": [
+        {
+          "name": "Trocar minha senha",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/usuarios/me/senha",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usuarios",
+                "me",
+                "senha"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"senha_atual\": \"senha123\",\n  \"nova_senha\": \"novaSenha123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Usuário autenticado troca a própria senha."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/usuarios",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usuarios"
+              ]
+            },
+            "description": "admin"
+          },
+          "response": []
+        },
+        {
+          "name": "Obter",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/usuarios/{{id_usuario}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usuarios",
+                "{{id_usuario}}"
+              ]
+            },
+            "description": "admin"
+          },
+          "response": []
+        },
+        {
+          "name": "Criar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/usuarios",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usuarios"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome_completo\": \"Maria Analista\",\n  \"cargo_id\": 1,\n  \"cpf\": \"123.456.789-00\",\n  \"email\": \"maria.analista@climbe.local\",\n  \"contato\": \"(11) 99999-0000\",\n  \"papel\": \"analista\",\n  \"senha\": \"senha123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "admin. papel: admin | analista | contratante."
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/usuarios/{{id_usuario}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usuarios",
+                "{{id_usuario}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome_completo\": \"Maria A. Silva\",\n  \"cargo_id\": 2,\n  \"contato\": \"(11) 98888-0000\",\n  \"papel\": \"analista\",\n  \"situacao\": \"ativo\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "admin. situacao: ativo | inativo."
+          },
+          "response": []
+        },
+        {
+          "name": "Remover (desativar)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/usuarios/{{id_usuario}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usuarios",
+                "{{id_usuario}}"
+              ]
+            },
+            "description": "admin. Soft delete."
+          },
+          "response": []
+        }
+      ],
+      "description": "CRUD de usuários."
+    },
+    {
+      "name": "Serviços",
+      "item": [
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/servicos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "servicos"
+              ]
+            },
+            "description": "Qualquer usuário autenticado."
+          },
+          "response": []
+        }
+      ],
+      "description": "Catálogo de serviços (somente leitura)."
+    },
+    {
+      "name": "Empresas",
+      "item": [
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/empresas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "empresas"
+              ]
+            },
+            "description": "admin | analista"
+          },
+          "response": []
+        },
+        {
+          "name": "Obter",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/empresas/{{id_empresa}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "empresas",
+                "{{id_empresa}}"
+              ]
+            },
+            "description": "admin | analista"
+          },
+          "response": []
+        },
+        {
+          "name": "Criar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/empresas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "empresas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"razao_social\": \"Acme Comércio LTDA\",\n  \"nome_fantasia\": \"Acme\",\n  \"cnpj\": \"12.345.678/0001-90\",\n  \"logradouro\": \"Av. Paulista\",\n  \"numero\": \"1000\",\n  \"bairro\": \"Bela Vista\",\n  \"cidade\": \"São Paulo\",\n  \"uf\": \"SP\",\n  \"cep\": \"01310-100\",\n  \"telefone\": \"(11) 3000-0000\",\n  \"email\": \"contato@acme.com.br\",\n  \"representante_nome\": \"João Silva\",\n  \"representante_cpf\": \"111.222.333-44\",\n  \"representante_contato\": \"(11) 99999-1111\",\n  \"servico_ids\": [\n    1,\n    2\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "admin | analista"
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/empresas/{{id_empresa}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "empresas",
+                "{{id_empresa}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome_fantasia\": \"Acme Brasil\",\n  \"telefone\": \"(11) 3000-9999\",\n  \"servico_ids\": [\n    1\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "admin | analista. servico_ids: null não altera; lista substitui."
+          },
+          "response": []
+        },
+        {
+          "name": "Remover",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/empresas/{{id_empresa}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "empresas",
+                "{{id_empresa}}"
+              ]
+            },
+            "description": "admin | analista"
+          },
+          "response": []
+        }
+      ],
+      "description": "CRUD de empresas (contratantes)."
+    },
+    {
+      "name": "Propostas",
+      "item": [
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/propostas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "propostas"
+              ]
+            },
+            "description": "admin | analista"
+          },
+          "response": []
+        },
+        {
+          "name": "Obter",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/propostas/{{id_proposta}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "propostas",
+                "{{id_proposta}}"
+              ]
+            },
+            "description": "admin | analista"
+          },
+          "response": []
+        },
+        {
+          "name": "Criar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/propostas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "propostas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"empresa_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "admin | analista. Nasce com status 'rascunho'."
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/propostas/{{id_proposta}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "propostas",
+                "{{id_proposta}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"empresa_id\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "admin | analista"
+          },
+          "response": []
+        },
+        {
+          "name": "Remover",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/propostas/{{id_proposta}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "propostas",
+                "{{id_proposta}}"
+              ]
+            },
+            "description": "admin | analista"
+          },
+          "response": []
+        },
+        {
+          "name": "Enviar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/propostas/{{id_proposta}}/enviar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "propostas",
+                "{{id_proposta}}",
+                "enviar"
+              ]
+            },
+            "description": "Transição → enviada."
+          },
+          "response": []
+        },
+        {
+          "name": "Aprovar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/propostas/{{id_proposta}}/aprovar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "propostas",
+                "{{id_proposta}}",
+                "aprovar"
+              ]
+            },
+            "description": "Transição → aprovada. Gera o contrato automaticamente."
+          },
+          "response": []
+        },
+        {
+          "name": "Recusar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/propostas/{{id_proposta}}/recusar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "propostas",
+                "{{id_proposta}}",
+                "recusar"
+              ]
+            },
+            "description": "Transição → recusada."
+          },
+          "response": []
+        }
+      ],
+      "description": "Propostas e máquina de estados de status."
+    },
+    {
+      "name": "Contratos",
+      "item": [
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/contratos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "contratos"
+              ]
+            },
+            "description": "admin | analista"
+          },
+          "response": []
+        },
+        {
+          "name": "Obter",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/contratos/{{id_contrato}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "contratos",
+                "{{id_contrato}}"
+              ]
+            },
+            "description": "admin | analista"
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/contratos/{{id_contrato}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "contratos",
+                "{{id_contrato}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data_inicio\": \"2026-07-01\",\n  \"data_fim\": \"2027-06-30\",\n  \"prazo_entrega\": \"2026-07-15\",\n  \"recorrente\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "admin | analista"
+          },
+          "response": []
+        },
+        {
+          "name": "Encerrar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/contratos/{{id_contrato}}/encerrar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "contratos",
+                "{{id_contrato}}",
+                "encerrar"
+              ]
+            },
+            "description": "admin | analista"
+          },
+          "response": []
+        }
+      ],
+      "description": "Contratos gerados a partir de propostas aprovadas."
+    },
+    {
+      "name": "Documentos",
+      "item": [
+        {
+          "name": "Upload",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/documentos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "documentos"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "empresa_id",
+                  "value": "{{id_empresa}}",
+                  "type": "text"
+                },
+                {
+                  "key": "tipo_documento",
+                  "value": "balanco",
+                  "type": "text",
+                  "description": "balanco | dre | planilhas_gerenciais | cnpj | contrato_social"
+                },
+                {
+                  "key": "arquivo",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "description": "admin | analista. multipart/form-data. Selecione o arquivo no campo 'arquivo'."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/documentos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "documentos"
+              ],
+              "query": [
+                {
+                  "key": "empresa_id",
+                  "value": "{{id_empresa}}",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "admin | analista. Habilite o filtro empresa_id se quiser."
+          },
+          "response": []
+        },
+        {
+          "name": "Obter",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/documentos/{{id_documento}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "documentos",
+                "{{id_documento}}"
+              ]
+            },
+            "description": "admin | analista"
+          },
+          "response": []
+        },
+        {
+          "name": "Baixar arquivo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/documentos/{{id_documento}}/arquivo",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "documentos",
+                "{{id_documento}}",
+                "arquivo"
+              ]
+            },
+            "description": "admin | analista. Faz download do binário."
+          },
+          "response": []
+        },
+        {
+          "name": "Validar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/documentos/{{id_documento}}/validar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "documentos",
+                "{{id_documento}}",
+                "validar"
+              ]
+            },
+            "description": "admin | analista"
+          },
+          "response": []
+        },
+        {
+          "name": "Reprovar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/documentos/{{id_documento}}/reprovar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "documentos",
+                "{{id_documento}}",
+                "reprovar"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"observacao\": \"Documento ilegível, favor reenviar.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "admin | analista"
+          },
+          "response": []
+        }
+      ],
+      "description": "Upload, validação e download de documentos das empresas."
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Climbe Squad-X — Portal de documentação</title>
+<style>
+  :root{
+    --bg:#0b1220; --ink:#eaf0ff; --muted:#9fb0d0; --brand:#3ea6ff; --brand2:#23d6a8;
+    --accent:#f5b54a; --card:#16233e; --line:rgba(255,255,255,.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);
+    background:radial-gradient(1100px 640px at 82% -12%, #1a2a4d 0%, var(--bg) 55%) fixed;min-height:100vh;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:72px 26px 60px}
+  .brandmark{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.04em;font-size:15px;color:var(--muted);margin-bottom:40px}
+  .brandmark .m{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;color:#06101f;font-weight:900;font-size:16px}
+  .kicker{text-transform:uppercase;letter-spacing:.22em;font-size:13px;font-weight:700;color:var(--brand);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+  .kicker::before{content:"";width:34px;height:2px;background:var(--brand);display:inline-block}
+  h1{font-size:clamp(34px,5.4vw,58px);line-height:1.05;letter-spacing:-.5px}
+  h1 span{background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{color:var(--muted);font-size:clamp(16px,1.9vw,20px);max-width:60ch;line-height:1.5;margin-top:20px}
+  .chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px}
+  .badge-repo{font-family:ui-monospace,"Cascadia Code",Consolas,monospace;font-size:13px;padding:5px 12px;border-radius:8px;background:rgba(62,166,255,.12);border:1px solid rgba(62,166,255,.3);color:#bfe0ff}
+  .badge-repo.app{background:rgba(35,214,168,.12);border-color:rgba(35,214,168,.3);color:#bff3e4}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:52px}
+  a.card{
+    display:flex;flex-direction:column;text-decoration:none;color:inherit;
+    background:linear-gradient(180deg,var(--card),#13203a);border:1px solid var(--line);
+    border-radius:18px;padding:26px;transition:transform .18s,border-color .18s,box-shadow .18s;min-height:230px;
+  }
+  a.card:hover{transform:translateY(-4px);border-color:rgba(62,166,255,.5);box-shadow:0 16px 40px rgba(0,0,0,.4)}
+  .ic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:26px;margin-bottom:18px}
+  .ic.pres{background:rgba(62,166,255,.15);border:1px solid rgba(62,166,255,.35)}
+  .ic.api{background:rgba(35,214,168,.15);border:1px solid rgba(35,214,168,.35)}
+  .ic.post{background:rgba(245,181,74,.15);border:1px solid rgba(245,181,74,.35)}
+  a.card h3{font-size:20px;margin-bottom:8px}
+  a.card p{color:var(--muted);font-size:15px;line-height:1.5;flex:1}
+  a.card .go{margin-top:16px;color:var(--brand);font-weight:700;font-size:14px;display:flex;align-items:center;gap:7px}
+  a.card:hover .go{gap:12px}
+  footer{margin-top:56px;color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding-top:22px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  footer a{color:var(--brand);text-decoration:none}
+  @media(max-width:760px){.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brandmark"><span class="m">C</span> Climbe Squad-X</div>
+    <div class="kicker">Portal de documentação</div>
+    <h1>Tudo que o squad<br><span>construiu</span>, em um lugar.</h1>
+    <p class="lead">Apresentação, especificações da API e coleção de testes do projeto Climbe — a plataforma de gestão de contabilidade consultiva desenvolvida pela Squad-X.</p>
+    <div class="chips">
+      <span class="badge-repo">climbe-api · backend</span>
+      <span class="badge-repo app">climbe-app · frontend</span>
+    </div>
+
+    <div class="cards">
+      <a class="card" href="apresentacao/index.html">
+        <div class="ic pres">🎬</div>
+        <h3>Apresentação</h3>
+        <p>Deck do que foi entregue nas duas primeiras semanas, com vídeo da demo e os créditos de cada participante.</p>
+        <div class="go">Abrir apresentação →</div>
+      </a>
+      <a class="card" href="api/index.html">
+        <div class="ic api">📘</div>
+        <h3>Documentação da API</h3>
+        <p>Especificações das 8 capabilities do backend — o que foi feito e as decisões técnicas de cada uma.</p>
+        <div class="go">Ver specs →</div>
+      </a>
+      <a class="card" href="postman/index.html">
+        <div class="ic post">📮</div>
+        <h3>Coleção Postman</h3>
+        <p>Coleção pronta com os endpoints da API para testar as rotas de autenticação, cadastros, propostas e mais.</p>
+        <div class="go">Abrir Postman →</div>
+      </a>
+    </div>
+
+    <footer>
+      <span>Climbe Squad-X · gerado a partir dos repositórios do projeto</span>
+      <span>
+        <a href="https://github.com/marcos-grocha/climbe-api">climbe-api</a> ·
+        <a href="https://github.com/marcos-grocha/climbe-app">climbe-app</a>
+      </span>
+    </footer>
+  </div>
+</body>
+</html>

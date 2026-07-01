@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coleção Postman — Climbe Squad-X</title>
+<style>
+  :root{--bg:#0b1220;--ink:#eaf0ff;--muted:#9fb0d0;--brand:#3ea6ff;--brand2:#23d6a8;--accent:#f5b54a;--card:#16233e;--line:rgba(255,255,255,.10)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);background:radial-gradient(1000px 600px at 82% -12%,#1a2a4d 0%,var(--bg) 55%) fixed;min-height:100vh}
+  .wrap{max-width:820px;margin:0 auto;padding:60px 26px}
+  a.back{color:var(--muted);text-decoration:none;font-size:14px}
+  a.back:hover{color:var(--brand)}
+  .kicker{text-transform:uppercase;letter-spacing:.22em;font-size:13px;font-weight:700;color:var(--accent);margin:28px 0 14px}
+  h1{font-size:clamp(30px,5vw,46px);letter-spacing:-.5px}
+  .lead{color:var(--muted);font-size:18px;line-height:1.5;margin-top:16px}
+  .dl{display:inline-flex;align-items:center;gap:10px;margin-top:28px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#06101f;font-weight:800;text-decoration:none;padding:14px 22px;border-radius:12px;font-size:16px}
+  .dl:hover{filter:brightness(1.08)}
+  .card{background:linear-gradient(180deg,var(--card),#13203a);border:1px solid var(--line);border-radius:16px;padding:26px 28px;margin-top:34px}
+  .card h3{margin-bottom:14px;font-size:19px}
+  ol{margin:0 0 0 20px} li{margin:9px 0;line-height:1.55;color:var(--ink)}
+  code{font-family:ui-monospace,"Cascadia Code",Consolas,monospace;background:rgba(255,255,255,.07);padding:2px 7px;border-radius:6px;font-size:14px}
+  .muted{color:var(--muted)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="../index.html">← Voltar ao portal</a>
+    <div class="kicker">Coleção Postman</div>
+    <h1>Climbe API no Postman</h1>
+    <p class="lead">Coleção que cobre toda a Climbe API — <b>9 pastas, 38 requests</b>: autenticação, cargos, usuários, serviços, empresas, propostas, contratos e documentos.</p>
+    <a class="dl" href="Squad-X-Climbe.postman_collection.json" download>⬇ Baixar a collection (.json)</a>
+
+    <div class="card">
+      <h3>Importar</h3>
+      <ol>
+        <li>No Postman: <b>Import</b> → arraste o arquivo <code>Squad-X-Climbe.postman_collection.json</code>.</li>
+        <li>Isso cria a collection <b>Squad-X | Climbe</b> já com as pastas e requests.</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h3>Usar</h3>
+      <ol>
+        <li>Em <b>Variables</b> da collection, confira <code>base_url</code> (padrão <code>http://localhost:8000</code>) e ajuste <code>admin_email</code> / <code>admin_password</code> conforme o seu <code>.env</code>.</li>
+        <li>Rode <b>Auth → Login</b>. O token é salvo em <code>access_token</code> automaticamente e os demais requests herdam o <code>Bearer</code>.</li>
+        <li>Ajuste os <code>id_*</code> (ex.: <code>id_empresa</code>, <code>id_proposta</code>) para apontar os recursos nos endpoints com path param.</li>
+      </ol>
+    </div>
+    <p class="muted" style="margin-top:26px;font-size:14px">Fonte e gerador da coleção ficam em <code>climbe-api/docs/postman/</code>.</p>
+  </div>
+</body>
+</html>

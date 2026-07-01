@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Climbe Squad-X — O que entregamos</title>
+<style>
+  :root{
+    --bg:#0b1220; --bg2:#111c33; --ink:#eaf0ff; --muted:#9fb0d0;
+    --brand:#3ea6ff; --brand2:#23d6a8; --accent:#f5b54a;
+    --card:#16233e; --line:rgba(255,255,255,.10); --good:#23d6a8; --todo:#7d8bad;
+    --api:#3ea6ff; --app:#23d6a8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:radial-gradient(1200px 700px at 80% -10%, #1a2a4d 0%, var(--bg) 55%) fixed;
+    color:var(--ink); overflow:hidden;
+  }
+  .deck{position:relative;height:100vh;width:100vw}
+  .slide{
+    position:absolute;inset:0;display:none;flex-direction:column;
+    padding:6vh 7vw 9vh;animation:fade .45s ease;
+  }
+  .slide.active{display:flex}
+  @keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  h1{font-size:clamp(34px,5vw,64px);line-height:1.05;letter-spacing:-.5px}
+  h2{font-size:clamp(26px,3.4vw,44px);letter-spacing:-.5px;margin-bottom:.4em}
+  h3{font-size:clamp(17px,1.5vw,21px)}
+  p,li{font-size:clamp(15px,1.45vw,20px);line-height:1.5;color:var(--ink)}
+  .muted{color:var(--muted)}
+  .kicker{
+    text-transform:uppercase;letter-spacing:.22em;font-size:13px;font-weight:700;
+    color:var(--brand);margin-bottom:14px;display:flex;align-items:center;gap:10px
+  }
+  .kicker::before{content:"";width:34px;height:2px;background:var(--brand);display:inline-block}
+  .grid{display:grid;gap:22px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .card{
+    background:linear-gradient(180deg,var(--card),#13203a);
+    border:1px solid var(--line);border-radius:18px;padding:22px 24px;
+  }
+  .card h3{margin-bottom:8px}
+  .card .tag{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+  .pill{
+    display:inline-flex;align-items:center;gap:8px;padding:6px 13px;border-radius:999px;
+    font-size:13px;font-weight:600;border:1px solid var(--line);background:rgba(255,255,255,.04)
+  }
+  .dot{width:9px;height:9px;border-radius:50%}
+  .dot.api{background:var(--api)} .dot.app{background:var(--app)}
+  ul{list-style:none}
+  .feat li{padding:8px 0 8px 30px;position:relative;border-bottom:1px solid var(--line)}
+  .feat li:last-child{border-bottom:0}
+  .feat li::before{
+    content:"";position:absolute;left:4px;top:15px;width:9px;height:9px;border-radius:50%;
+    background:var(--brand2);box-shadow:0 0 0 4px rgba(35,214,168,.16)
+  }
+  .center{justify-content:center}
+  .badge-repo{
+    font-family:ui-monospace,"Cascadia Code",Consolas,monospace;font-size:13px;
+    padding:4px 11px;border-radius:8px;background:rgba(62,166,255,.12);
+    border:1px solid rgba(62,166,255,.3);color:#bfe0ff
+  }
+  .badge-repo.app{background:rgba(35,214,168,.12);border-color:rgba(35,214,168,.3);color:#bff3e4}
+  .flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap}
+  .flow .step{
+    flex:1;min-width:150px;background:var(--card);border:1px solid var(--line);
+    border-radius:14px;padding:16px;position:relative;margin:6px
+  }
+  .flow .step .n{font-size:12px;color:var(--brand);font-weight:800;letter-spacing:.1em}
+  .flow .step b{display:block;margin:6px 0 4px;font-size:17px}
+  .flow .step small{color:var(--muted);font-size:13px}
+  .stat{display:flex;flex-direction:column;gap:4px}
+  .stat .num{font-size:clamp(38px,5vw,62px);font-weight:800;line-height:1;
+    background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat .lbl{color:var(--muted);font-size:14px}
+  .status-list li{display:flex;align-items:center;gap:12px;padding:7px 0}
+  .chk{width:20px;height:20px;border-radius:6px;display:grid;place-items:center;font-size:12px;font-weight:900;flex:none}
+  .chk.done{background:rgba(35,214,168,.16);color:var(--good);border:1px solid rgba(35,214,168,.4)}
+  .chk.todo{background:rgba(125,139,173,.14);color:var(--todo);border:1px solid rgba(125,139,173,.35)}
+  .todo-txt{color:var(--muted)}
+  /* progress + nav */
+  .bar{position:fixed;left:0;bottom:0;height:4px;background:linear-gradient(90deg,var(--brand),var(--brand2));transition:width .35s;z-index:20}
+  .hud{position:fixed;right:26px;bottom:18px;font-size:13px;color:var(--muted);z-index:20;display:flex;gap:14px;align-items:center}
+  .hud .k{border:1px solid var(--line);border-radius:6px;padding:2px 8px;font-size:11px}
+  .brandmark{position:fixed;left:26px;bottom:16px;z-index:20;display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:.04em;font-size:14px;color:var(--muted);text-decoration:none;transition:color .15s}
+  a.brandmark:hover{color:var(--ink)}
+  .brandmark .back{font-weight:600;color:var(--muted);opacity:.75;font-size:13px}
+  a.brandmark:hover .back{color:var(--brand);opacity:1}
+  .brandmark .m{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;color:#06101f;font-weight:900}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:34px;flex:1;min-height:0}
+  .col{display:flex;flex-direction:column;min-height:0}
+  .col .scroll{overflow:auto}
+  .repo-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .repo-head .ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;font-size:20px}
+  .repo-head .ic.api{background:rgba(62,166,255,.15);border:1px solid rgba(62,166,255,.35)}
+  .repo-head .ic.app{background:rgba(35,214,168,.15);border:1px solid rgba(35,214,168,.35)}
+  .lead{font-size:clamp(18px,1.9vw,24px);color:var(--muted);max-width:60ch;line-height:1.5}
+  .chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:6px}
+  .title-wrap{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .footnote{margin-top:auto;padding-top:18px;color:var(--muted);font-size:14px}
+  .arrow{align-self:center;color:var(--brand);font-size:26px;padding:0 4px}
+  /* avatar with photo + initials fallback */
+  .avatar{position:relative;border-radius:50%;overflow:hidden;flex:none;
+    background:linear-gradient(135deg,var(--c1,var(--brand)),var(--c2,var(--brand2)));
+    display:grid;place-items:center;box-shadow:0 6px 22px rgba(0,0,0,.35)}
+  .avatar span{font-weight:800;color:#06101f;line-height:1}
+  .avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .avatar.lg{width:118px;height:118px} .avatar.lg span{font-size:42px}
+  .avatar.xl{width:150px;height:150px} .avatar.xl span{font-size:54px}
+  /* video */
+  .video-wrap{flex:1;display:grid;place-items:center;min-height:0}
+  .video-frame{width:min(960px,82vw);max-height:62vh;aspect-ratio:16/9;border-radius:18px;overflow:hidden;
+    border:1px solid var(--line);background:#06101f;box-shadow:0 18px 60px rgba(0,0,0,.5);position:relative}
+  .video-frame video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
+  .video-placeholder{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;
+    background:repeating-linear-gradient(45deg,#0d1830,#0d1830 14px,#101d38 14px,#101d38 28px)}
+  .video-placeholder .pp{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;margin:0 auto 14px;
+    background:linear-gradient(135deg,var(--brand),var(--brand2));color:#06101f;font-size:30px}
+  /* person credit slide */
+  .person{display:grid;grid-template-columns:auto 1fr;gap:38px;align-items:center;flex:1}
+  .person .who{text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}
+  .person .who .role{color:var(--muted);font-size:15px}
+  @media(max-width:820px){.two-col,.g2,.g3,.g4{grid-template-columns:1fr}.person{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- 1 — CAPA -->
+  <section class="slide active center">
+    <div class="title-wrap">
+      <div class="kicker">Squad-X · Demo de entrega</div>
+      <h1>Climbe<br><span style="background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent">Plataforma de gestão de contabilidade consultiva</span></h1>
+      <p class="lead" style="margin-top:22px">O que o squad construiu nos dois repositórios — backend e frontend — para digitalizar o fluxo da Climbe, da proposta comercial à validação de documentos.</p>
+      <div class="chips" style="margin-top:26px">
+        <span class="badge-repo">marcos-grocha/climbe-api</span>
+        <span class="badge-repo app">marcos-grocha/climbe-app</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 — VISÃO GERAL -->
+  <section class="slide">
+    <div class="kicker">Visão geral</div>
+    <h2>Dois repositórios, um produto</h2>
+    <div class="two-col">
+      <div class="col card">
+        <div class="repo-head"><div class="ic api">⚙️</div>
+          <div><h3>climbe-api</h3><span class="badge-repo">backend · FastAPI</span></div></div>
+        <p class="muted">A API que concentra as regras de negócio: autenticação, cadastros, propostas, contratos e documentos. Construída com desenvolvimento <b style="color:var(--ink)">spec-driven</b> (OpenSpec) — cada funcionalidade nasce de uma especificação versionada.</p>
+        <div class="chips" style="margin-top:18px">
+          <span class="pill">FastAPI</span><span class="pill">SQLAlchemy 2.x</span><span class="pill">PostgreSQL</span><span class="pill">Alembic</span><span class="pill">JWT + RBAC</span>
+        </div>
+      </div>
+      <div class="col card">
+        <div class="repo-head"><div class="ic app">🖥️</div>
+          <div><h3>climbe-app</h3><span class="badge-repo app">frontend · Vue 3</span></div></div>
+        <p class="muted">A interface usada pelo time da Climbe: telas de cadastro, fluxo de propostas e contratos, validação de documentos e uma agenda interativa. Conectada à API e organizada por stores e serviços.</p>
+        <div class="chips" style="margin-top:18px">
+          <span class="pill">Vue 3</span><span class="pill">Vite</span><span class="pill">Pinia</span><span class="pill">PrimeVue</span><span class="pill">Tailwind</span><span class="pill">FullCalendar</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 — O SQUAD -->
+  <section class="slide">
+    <div class="kicker">Quem fez</div>
+    <h2>O squad</h2>
+    <div class="grid g4" style="flex:1;align-content:center">
+      <div class="card" style="text-align:center">
+        <div class="avatar lg" style="margin:0 auto 14px;--c1:#3ea6ff;--c2:#6ec3ff"><span>MG</span><img src="fotos/marcos.jpg" alt="Marcos" onerror="this.remove()"></div>
+        <h3>Marcos Guimarães</h3><p class="muted">Backend, infra & specs<br><span class="badge-repo" style="margin-top:8px;display:inline-block">@marcos-grocha</span></p></div>
+      <div class="card" style="text-align:center">
+        <div class="avatar lg" style="margin:0 auto 14px;--c1:#23d6a8;--c2:#5ff0cd"><span>VA</span><img src="fotos/valtson.jpg" alt="Váltson" onerror="this.remove()"></div>
+        <h3>Váltson Araújo</h3><p class="muted">Frontend<br><span class="badge-repo app" style="margin-top:8px;display:inline-block">@valtson-silva</span></p></div>
+      <div class="card" style="text-align:center">
+        <div class="avatar lg" style="margin:0 auto 14px;--c1:#f5b54a;--c2:#ffd584"><span>HB</span><img src="fotos/hunald.jpg" alt="Hunald" onerror="this.remove()"></div>
+        <h3>Hunald Barreto</h3><p class="muted">Frontend<br><span class="badge-repo app" style="margin-top:8px;display:inline-block">@Hunald01</span></p></div>
+      <div class="card" style="text-align:center">
+        <div class="avatar lg" style="margin:0 auto 14px;--c1:#b387ff;--c2:#d9c2ff"><span>GL</span><img src="fotos/gabriel.jpg" alt="Gabriel" onerror="this.remove()"></div>
+        <h3>Gabriel Linhares</h3><p class="muted">Frontend<br><span class="badge-repo app" style="margin-top:8px;display:inline-block">@Gabriellinhares99</span></p></div>
+    </div>
+    <p class="footnote">Organização do trabalho no GitHub Project <b>“Climbe Squad-X”</b> — colunas To do / In Review / Done, cards são as issues dos dois repositórios.</p>
+  </section>
+
+  <!-- 4 — ARQUITETURA -->
+  <section class="slide">
+    <div class="kicker">Como é montado</div>
+    <h2>Arquitetura & stack</h2>
+    <div class="flow" style="flex:1;align-content:center;align-items:center">
+      <div class="step"><div class="n">FRONTEND</div><b>climbe-app</b><small>Vue 3 + Pinia + PrimeVue. Views por domínio, stores de estado e camada de <code>services</code> com Axios.</small></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="n">HTTP / JSON</div><b>REST + JWT</b><small>Cada request autenticada com token JWT; RBAC por papel controla o que cada cargo pode fazer.</small></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="n">BACKEND</div><b>climbe-api</b><small>FastAPI com routers, schemas Pydantic e camada de <code>services</code>. 9 routers ativos.</small></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="n">DADOS</div><b>PostgreSQL</b><small>SQLAlchemy 2.x + migrations Alembic. Modelo ER completo do domínio.</small></div>
+    </div>
+    <p class="footnote">Desenvolvimento <b>spec-driven</b>: toda capability do backend nasce como especificação OpenSpec (proposal · design · tasks · specs) antes de virar código.</p>
+  </section>
+
+  <!-- 5 — BACKEND ENTREGAS -->
+  <section class="slide">
+    <div class="kicker"><span class="badge-repo">climbe-api</span></div>
+    <h2>Backend — o que entregamos</h2>
+    <div class="two-col">
+      <div class="col">
+        <ul class="feat">
+          <li><b>Fundação da API</b> — health checks, CORS, Alembic, estrutura modular.</li>
+          <li><b>Modelo de dados completo</b> — todas as entidades do ER + migration inicial + seeds.</li>
+          <li><b>Autenticação JWT</b> — login email/senha, bcrypt, <code>/auth/me</code>, RBAC por papel.</li>
+          <li><b>CRUD de usuários & cargos</b> — validação de CPF, e-mail único, soft delete.</li>
+        </ul>
+      </div>
+      <div class="col">
+        <ul class="feat">
+          <li><b>CRUD de empresas</b> — validação de CNPJ, endereço, representante, vínculo de serviços (M:N).</li>
+          <li><b>Propostas comerciais</b> — máquina de estados rascunho → enviada → aprovada/recusada.</li>
+          <li><b>Contratos</b> — gerados <i>automaticamente</i> ao aprovar a proposta; prazos e recorrência.</li>
+          <li><b>Documentos</b> — upload multipart, fluxo de validação pendente → válido/inválido.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="footnote"><b>8 capabilities</b> entregues e arquivadas · <b>9 routers</b> ativos: auth, cargos, usuários, serviços, empresas, propostas, contratos, documentos, health.</p>
+  </section>
+
+  <!-- 6 — FRONTEND ENTREGAS -->
+  <section class="slide">
+    <div class="kicker"><span class="badge-repo app">climbe-app</span></div>
+    <h2>Frontend — o que entregamos</h2>
+    <div class="two-col">
+      <div class="col">
+        <ul class="feat">
+          <li><b>Login & layout</b> — autenticação, sidebar, header e wrapper de páginas.</li>
+          <li><b>Usuários</b> — listagem de usuários/admins e formulário, integrados à API.</li>
+          <li><b>Empresas</b> — lista e formulário de cadastro.</li>
+          <li><b>Propostas</b> — lista e formulário, integrados ao backend.</li>
+        </ul>
+      </div>
+      <div class="col">
+        <ul class="feat">
+          <li><b>Contratos</b> — listagem e tela de detalhe, conectadas à API.</li>
+          <li><b>Documentos</b> — tela de visualização e tela de <b>validação</b> (aprovar/reprovar).</li>
+          <li><b>Agenda</b> — calendário mensal e semanal com FullCalendar, mini-calendário na sidebar e formulário de agendamento.</li>
+          <li><b>Design system</b> — componentes UI próprios (Button, Card, Table, Badge, Input).</li>
+        </ul>
+      </div>
+    </div>
+    <p class="footnote">Estado com <b>Pinia stores</b> (auth, empresas, propostas, reuniões, notificações) e camada de <b>services</b> dedicada por domínio.</p>
+  </section>
+
+  <!-- 7 — FLUXO END TO END -->
+  <section class="slide">
+    <div class="kicker">Ponta a ponta</div>
+    <h2>O fluxo de negócio que já roda</h2>
+    <div class="flow" style="flex:1;align-content:center;align-items:center">
+      <div class="step"><div class="n">01</div><b>Cadastro</b><small>Empresa e usuários cadastrados com validação de CNPJ/CPF.</small></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="n">02</div><b>Proposta</b><small>Criada e enviada; segue máquina de estados até ser aprovada.</small></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="n">03</div><b>Contrato</b><small>Gerado automaticamente na aprovação — com prazos e recorrência.</small></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="n">04</div><b>Documentos</b><small>Upload e validação pelo analista (válido / inválido com observação).</small></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="n">05</div><b>Agenda</b><small>Reuniões e prazos visíveis no calendário interativo.</small></div>
+    </div>
+    <p class="footnote">Tudo isso já existe nas duas pontas — API com as regras e o app com as telas integradas.</p>
+  </section>
+
+  <!-- 7.5 — DEMO EM VÍDEO -->
+  <section class="slide">
+    <div class="kicker">Veja funcionando</div>
+    <h2 style="margin-bottom:.2em">Demo — o projeto rodando</h2>
+    <div class="video-wrap">
+      <div class="video-frame">
+        <video controls preload="metadata" poster="demo-poster.jpg">
+          <source src="demo.mp4" type="video/mp4">
+        </video>
+        <div class="video-placeholder" id="videoPlaceholder">
+          <div>
+            <div class="pp">▶</div>
+            <h3>Carregando o vídeo da demo…</h3>
+            <p class="muted" style="margin-top:8px">Se não aparecer, confirme que o arquivo <b style="color:var(--ink)">demo.mp4</b> está nesta pasta.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="footnote">Navegação clicando nas telas: login, cadastros, propostas, contratos, validação de documentos e agenda.</p>
+  </section>
+
+  <!-- 8 — DESTAQUES TÉCNICOS -->
+  <section class="slide">
+    <div class="kicker">Engenharia</div>
+    <h2>Destaques técnicos</h2>
+    <div class="grid g2" style="flex:1;align-content:center">
+      <div class="card"><span class="tag" style="color:var(--brand)">PROCESSO</span><h3 style="margin-top:6px">Spec-driven com OpenSpec</h3><p class="muted">Cada capability começa como especificação versionada e é arquivada ao concluir. Uma PR por capability: implementa, sincroniza e arquiva.</p></div>
+      <div class="card"><span class="tag" style="color:var(--brand2)">SEGURANÇA</span><h3 style="margin-top:6px">JWT + RBAC por papel</h3><p class="muted">Autenticação com token, hash bcrypt e controle de acesso por cargo (admin, analista, contratante…) nos endpoints sensíveis.</p></div>
+      <div class="card"><span class="tag" style="color:var(--accent)">AUTOMAÇÃO</span><h3 style="margin-top:6px">Contrato gerado por evento</h3><p class="muted">Aprovar uma proposta dispara automaticamente a criação do contrato — sem etapa manual, refletindo o fluxograma da Climbe.</p></div>
+      <div class="card"><span class="tag" style="color:var(--brand)">UX</span><h3 style="margin-top:6px">Agenda interativa</h3><p class="muted">FullCalendar com visões mensal e semanal, mini-calendário na sidebar e criação de agendamentos direto pela interface.</p></div>
+    </div>
+  </section>
+
+  <!-- 9 — NÚMEROS -->
+  <section class="slide">
+    <div class="kicker">Em números</div>
+    <h2>O que isso representa</h2>
+    <div class="grid g4" style="flex:1;align-content:center">
+      <div class="card stat"><span class="num">2</span><span class="lbl">repositórios em produção de código</span></div>
+      <div class="card stat"><span class="num">8</span><span class="lbl">capabilities de backend entregues</span></div>
+      <div class="card stat"><span class="num">9</span><span class="lbl">routers / domínios na API</span></div>
+      <div class="card stat"><span class="num">13+</span><span class="lbl">telas no frontend</span></div>
+    </div>
+    <p class="footnote">Resultado das duas primeiras semanas de roadmap — fundação + núcleo do negócio concluídos.</p>
+  </section>
+
+  <!-- 10 — ROADMAP / STATUS -->
+  <section class="slide">
+    <div class="kicker">Status do roadmap</div>
+    <h2>Concluído & próximos passos</h2>
+    <div class="two-col">
+      <div class="col">
+        <h3 style="margin-bottom:10px;color:var(--good)">✓ Entregue</h3>
+        <ul class="status-list">
+          <li><span class="chk done">✓</span> Fundação da API + modelo de dados</li>
+          <li><span class="chk done">✓</span> Autenticação JWT & RBAC</li>
+          <li><span class="chk done">✓</span> Usuários, cargos & empresas</li>
+          <li><span class="chk done">✓</span> Propostas & contratos</li>
+          <li><span class="chk done">✓</span> Documentos (upload + validação)</li>
+          <li><span class="chk done">✓</span> Frontend integrado + agenda</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3 style="margin-bottom:10px;color:var(--todo)">→ A seguir</h3>
+        <ul class="status-list">
+          <li><span class="chk todo">→</span> <span class="todo-txt">Login com Google (OAuth)</span></li>
+          <li><span class="chk todo">→</span> <span class="todo-txt">Agendamento integrado ao Google Calendar</span></li>
+          <li><span class="chk todo">→</span> <span class="todo-txt">Documentos no Google Drive</span></li>
+          <li><span class="chk todo">→</span> <span class="todo-txt">Central de notificações + e-mail</span></li>
+          <li><span class="chk todo">→</span> <span class="todo-txt">Relatórios em PDF</span></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footnote">Semana 3 do roadmap: integrações Google e polimento.</p>
+  </section>
+
+  <!-- CRÉDITOS — divisor -->
+  <section class="slide center">
+    <div class="title-wrap">
+      <div class="kicker">Créditos</div>
+      <h1>Quem construiu,<br>e o que cada um fez.</h1>
+      <p class="lead" style="margin-top:18px">O detalhe da contribuição de cada participante do squad nos dois repositórios.</p>
+    </div>
+  </section>
+
+  <!-- CRÉDITO — Marcos -->
+  <section class="slide">
+    <div class="kicker"><span class="badge-repo">climbe-api</span> <span class="muted" style="font-size:13px">· liderança técnica & gestão do squad</span></div>
+    <div class="person" style="grid-template-columns:auto 1fr;gap:30px">
+      <div class="who">
+        <div class="avatar xl" style="--c1:#3ea6ff;--c2:#6ec3ff"><span>MG</span><img src="fotos/marcos.jpg" alt="Marcos Guimarães" onerror="this.remove()"></div>
+        <div><h3>Marcos Guimarães</h3><div class="role">Backend, infra, arquitetura & gestão<br>@marcos-grocha</div></div>
+      </div>
+      <div class="grid g2" style="gap:26px">
+        <div>
+          <h3 style="color:var(--brand);margin-bottom:6px;font-size:15px;text-transform:uppercase;letter-spacing:.08em">Desenvolvimento — Backend</h3>
+          <ul class="feat">
+            <li>Scaffold do backend FastAPI + Docker Compose com PostgreSQL.</li>
+            <li>Modelagem completa do domínio (SQLAlchemy), migrations Alembic e seeds.</li>
+            <li>Autenticação e-mail/senha com JWT e RBAC / sistema de permissões.</li>
+            <li>CRUD de cargos, usuários (CPF) e empresas (CNPJ + serviços).</li>
+            <li>Endpoints de proposta e de contrato, com geração automática ao aprovar.</li>
+          </ul>
+        </div>
+        <div>
+          <h3 style="color:var(--accent);margin-bottom:6px;font-size:15px;text-transform:uppercase;letter-spacing:.08em">Gestão, arquitetura & infra</h3>
+          <ul class="feat">
+            <li>Arquitetura da solução e definição do modelo de dados dos dois repos.</li>
+            <li>Criação e organização de <b>todas as issues</b> e do board “Climbe Squad-X” (To do / In Review / Done, prioridades e tamanhos).</li>
+            <li>Roadmap de capabilities e processo <b>spec-driven</b> (OpenSpec) do projeto.</li>
+            <li>Setup de repositórios, Google Cloud Console e alinhamento de padrões/nomes.</li>
+            <li>Revisão de código e merge das PRs do time nos dois repositórios.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CRÉDITO — Gabriel -->
+  <section class="slide">
+    <div class="kicker"><span class="badge-repo app">climbe-app</span></div>
+    <div class="person">
+      <div class="who">
+        <div class="avatar xl" style="--c1:#b387ff;--c2:#d9c2ff"><span>GL</span><img src="fotos/gabriel.jpg" alt="Gabriel Linhares" onerror="this.remove()"></div>
+        <div><h3>Gabriel Linhares</h3><div class="role">Frontend · @Gabriellinhares99</div></div>
+      </div>
+      <div>
+        <ul class="feat">
+          <li>Store de autenticação (Pinia) e configuração do Axios com interceptor JWT.</li>
+          <li>Calendário mensal interativo com FullCalendar.</li>
+          <li>Sidebar com mini-calendário, botão criar e lista de agendas.</li>
+          <li>Tela de upload e listagem de documentos.</li>
+          <li>Tela de validação de documentos (fluxo do analista).</li>
+          <li>Telas de contratos (lista + detalhe) e integração com o backend.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CRÉDITO — Váltson -->
+  <section class="slide">
+    <div class="kicker"><span class="badge-repo app">climbe-app</span></div>
+    <div class="person">
+      <div class="who">
+        <div class="avatar xl" style="--c1:#23d6a8;--c2:#5ff0cd"><span>VA</span><img src="fotos/valtson.jpg" alt="Váltson Araújo" onerror="this.remove()"></div>
+        <div><h3>Váltson Araújo</h3><div class="role">Frontend · @valtson-silva</div></div>
+      </div>
+      <div>
+        <ul class="feat">
+          <li>Setup do PrimeVue e do Tailwind CSS no projeto.</li>
+          <li>Tela de listagem e formulário de empresa + integração com a API.</li>
+          <li>Tela de propostas com fluxo de aprovação + integração.</li>
+          <li>Integração de Login/Logout com o backend.</li>
+          <li>Agenda semanal do usuário logado.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CRÉDITO — Hunald -->
+  <section class="slide">
+    <div class="kicker"><span class="badge-repo app">climbe-app</span></div>
+    <div class="person">
+      <div class="who">
+        <div class="avatar xl" style="--c1:#f5b54a;--c2:#ffd584"><span>HB</span><img src="fotos/hunald.jpg" alt="Hunald Barreto" onerror="this.remove()"></div>
+        <div><h3>Hunald Barreto</h3><div class="role">Frontend · @Hunald01</div></div>
+      </div>
+      <div>
+        <ul class="feat">
+          <li>Layout base do app (sidebar + header).</li>
+          <li>Tela de login.</li>
+          <li>Tela de listagem e formulário de usuário (admin) + integração de usuários.</li>
+          <li>Formulário de agendamento de reunião.</li>
+          <li>Dropdown de notificações no header (badge + polling).</li>
+          <li>Módulos de Configurações e Relatórios.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 — ENCERRAMENTO -->
+  <section class="slide center">
+    <div class="title-wrap">
+      <div class="kicker">Obrigado</div>
+      <h1>Da especificação<br>à tela — entregando.</h1>
+      <p class="lead" style="margin-top:20px">Backend sólido e spec-driven, frontend integrado, e um fluxo de negócio rodando ponta a ponta. Pronto para as integrações da próxima fase.</p>
+      <div class="chips" style="margin-top:26px">
+        <span class="badge-repo">github.com/marcos-grocha/climbe-api</span>
+        <span class="badge-repo app">github.com/marcos-grocha/climbe-app</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="bar" id="bar"></div>
+<a class="brandmark" href="../index.html" title="Voltar ao portal"><span class="m">C</span> Climbe Squad-X <span class="back">· ← Portal</span></a>
+<div class="hud"><span id="counter">1 / 11</span><span class="k">← →</span></div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  let i=0;
+  function show(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    document.getElementById('counter').textContent=(i+1)+' / '+slides.length;
+    document.getElementById('bar').style.width=((i+1)/slides.length*100)+'%';
+  }
+  document.addEventListener('keydown',e=>{
+    if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)){e.preventDefault();show(i+1)}
+    else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+    else if(e.key==='Home')show(0); else if(e.key==='End')show(slides.length-1);
+  });
+  document.addEventListener('click',e=>{
+    if(e.target.closest('a')) return; // deixa links funcionarem (ex.: voltar ao portal)
+    if(e.target.closest('video')||e.target.closest('.video-frame')) return; // não navega ao usar o player
+    if(e.clientX < window.innerWidth*0.25) show(i-1); else show(i+1);
+  });
+  // some com o aviso quando o vídeo carregar de verdade
+  const vid=document.querySelector('.video-frame video');
+  if(vid){ vid.addEventListener('loadeddata',()=>{const p=document.getElementById('videoPlaceholder');if(p)p.style.display='none';}); }
+  show(0);
+</script>
+</body>
+</html>
