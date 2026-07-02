@@ -36,6 +36,11 @@
   .ic.pres{background:rgba(62,166,255,.15);border:1px solid rgba(62,166,255,.35)}
   .ic.api{background:rgba(35,214,168,.15);border:1px solid rgba(35,214,168,.35)}
   .ic.post{background:rgba(245,181,74,.15);border:1px solid rgba(245,181,74,.35)}
+  .ic.ind{background:rgba(179,135,255,.15);border:1px solid rgba(179,135,255,.4)}
+  a.card.featured{grid-column:1 / -1;flex-direction:row;align-items:center;gap:22px;min-height:auto}
+  a.card.featured .ic{margin-bottom:0;flex:none}
+  a.card.featured:hover{border-color:rgba(179,135,255,.6)}
+  a.card.featured .go{margin-top:0}
   a.card h3{font-size:20px;margin-bottom:8px}
   a.card p{color:var(--muted);font-size:15px;line-height:1.5;flex:1}
   a.card .go{margin-top:16px;color:var(--brand);font-weight:700;font-size:14px;display:flex;align-items:center;gap:7px}
@@ -74,6 +79,14 @@
         <h3>Coleção Postman</h3>
         <p>Coleção pronta com os endpoints da API para testar as rotas de autenticação, cadastros, propostas e mais.</p>
         <div class="go">Abrir Postman →</div>
+      </a>
+      <a class="card featured" href="apresentacao-individual/index.html">
+        <div class="ic ind">🎤</div>
+        <div style="flex:1">
+          <h3>Apresentação individual — Marcos</h3>
+          <p>Trajetória individual: gestão do squad, infraestrutura e a construção do backend em 9 PRs.</p>
+        </div>
+        <div class="go">Abrir apresentação →</div>
       </a>
     </div>
 

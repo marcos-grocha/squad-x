@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Climbe Squad-X — Apresentação individual · Marcos Guimarães</title>
+<style>
+  :root{
+    --bg:#0b1220; --bg2:#111c33; --ink:#eaf0ff; --muted:#9fb0d0;
+    --brand:#3ea6ff; --brand2:#23d6a8; --accent:#f5b54a;
+    --card:#16233e; --line:rgba(255,255,255,.10); --good:#23d6a8; --todo:#7d8bad;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:radial-gradient(1200px 700px at 80% -10%, #1a2a4d 0%, var(--bg) 55%) fixed;
+    color:var(--ink); overflow:hidden;
+  }
+  .deck{position:relative;height:100vh;width:100vw}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;padding:6vh 7vw 9vh;animation:fade .45s ease}
+  .slide.active{display:flex}
+  @keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  h1{font-size:clamp(32px,4.8vw,60px);line-height:1.05;letter-spacing:-.5px}
+  h2{font-size:clamp(24px,3.2vw,42px);letter-spacing:-.5px;margin-bottom:.35em}
+  h3{font-size:clamp(16px,1.5vw,21px)}
+  p,li{font-size:clamp(14px,1.4vw,19px);line-height:1.5;color:var(--ink)}
+  .muted{color:var(--muted)}
+  .kicker{text-transform:uppercase;letter-spacing:.22em;font-size:13px;font-weight:700;color:var(--brand);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+  .kicker::before{content:"";width:34px;height:2px;background:var(--brand);display:inline-block}
+  .kicker.g2c{color:var(--brand2)} .kicker.g2c::before{background:var(--brand2)}
+  .kicker.g3c{color:var(--accent)} .kicker.g3c::before{background:var(--accent)}
+  .grid{display:grid;gap:20px}
+  .g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+  .card{background:linear-gradient(180deg,var(--card),#13203a);border:1px solid var(--line);border-radius:16px;padding:20px 22px}
+  .card h3{margin-bottom:8px}
+  .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 13px;border-radius:999px;font-size:13px;font-weight:600;border:1px solid var(--line);background:rgba(255,255,255,.04)}
+  ul{list-style:none}
+  .feat li{padding:7px 0 7px 28px;position:relative;border-bottom:1px solid var(--line)}
+  .feat li:last-child{border-bottom:0}
+  .feat li::before{content:"";position:absolute;left:3px;top:14px;width:9px;height:9px;border-radius:50%;background:var(--brand2);box-shadow:0 0 0 4px rgba(35,214,168,.16)}
+  .feat.api li::before{background:var(--brand);box-shadow:0 0 0 4px rgba(62,166,255,.16)}
+  .feat.infra li::before{background:var(--accent);box-shadow:0 0 0 4px rgba(245,181,74,.16)}
+  .center{justify-content:center}
+  .title-wrap{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .lead{font-size:clamp(17px,1.8vw,23px);color:var(--muted);max-width:62ch;line-height:1.5}
+  .badge-repo{font-family:ui-monospace,"Cascadia Code",Consolas,monospace;font-size:13px;padding:4px 11px;border-radius:8px;background:rgba(62,166,255,.12);border:1px solid rgba(62,166,255,.3);color:#bfe0ff}
+  .badge-repo.app{background:rgba(35,214,168,.12);border-color:rgba(35,214,168,.3);color:#bff3e4}
+  .footnote{margin-top:auto;padding-top:16px;color:var(--muted);font-size:14px}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:32px;flex:1;min-height:0}
+  .col{display:flex;flex-direction:column;min-height:0}
+  /* PR chip */
+  .pr{font-family:ui-monospace,Consolas,monospace;font-size:12px;font-weight:700;color:#bfe0ff;background:rgba(62,166,255,.14);border:1px solid rgba(62,166,255,.32);border-radius:7px;padding:2px 8px;flex:none}
+  .prrow{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line)}
+  .prrow:last-child{border-bottom:0}
+  .prrow b{font-size:15px} .prrow small{color:var(--muted);font-size:13px;display:block;margin-top:2px}
+  /* three pillars */
+  .pillar{display:flex;flex-direction:column;gap:8px}
+  .pillar .ic{width:48px;height:48px;border-radius:13px;display:grid;place-items:center;font-size:24px;margin-bottom:6px}
+  .ic.g{background:rgba(245,181,74,.15);border:1px solid rgba(245,181,74,.35)}
+  .ic.i{background:rgba(35,214,168,.15);border:1px solid rgba(35,214,168,.35)}
+  .ic.b{background:rgba(62,166,255,.15);border:1px solid rgba(62,166,255,.35)}
+  /* KANBAN recreation */
+  .board{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;flex:1;min-height:0;align-content:start}
+  .lane{background:#0e1930;border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column}
+  .lane-head{display:flex;align-items:center;gap:9px;margin-bottom:10px;font-weight:700;font-size:15px}
+  .lane-dot{width:12px;height:12px;border-radius:50%;flex:none}
+  .lane-count{margin-left:auto;font-size:12px;font-weight:800;background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+  .lane p{font-size:12.5px;color:var(--muted);line-height:1.45}
+  .lane .mini{margin-top:12px;background:#12203a;border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:12px;display:flex;align-items:center;gap:8px}
+  .lane .mini .chk{color:var(--good)}
+  /* LABELS recreation */
+  .labels{display:flex;flex-direction:column;gap:2px}
+  .lblrow{display:grid;grid-template-columns:190px 1fr;gap:16px;align-items:center;padding:11px 4px;border-bottom:1px solid var(--line)}
+  .lbl{justify-self:start;font-weight:700;font-size:13px;padding:4px 12px;border-radius:999px;border:1px solid;background:rgba(255,255,255,.03)}
+  .lblrow .desc{color:var(--muted);font-size:14px}
+  .lbl.backend{color:#3fb950;border-color:#2ea043}
+  .lbl.bug{color:#f0637a;border-color:#a5303a}
+  .lbl.could{color:#d3a26a;border-color:#8a6d3b}
+  .lbl.doc{color:#58a6ff;border-color:#1f6feb}
+  .lbl.must{color:#bcd44a;border-color:#7a8b3a}
+  .lbl.infra{color:#b6bcd6;border-color:#6e7592}
+  .lbl.should{color:#e3b341;border-color:#9e7710}
+  .stat .num{font-size:clamp(34px,4.6vw,58px);font-weight:800;line-height:1;background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat .lbl2{color:var(--muted);font-size:14px}
+  .bar{position:fixed;left:0;bottom:0;height:4px;background:linear-gradient(90deg,var(--brand),var(--brand2));transition:width .35s;z-index:20}
+  .hud{position:fixed;right:26px;bottom:18px;font-size:13px;color:var(--muted);z-index:20;display:flex;gap:14px;align-items:center}
+  .hud .k{border:1px solid var(--line);border-radius:6px;padding:2px 8px;font-size:11px}
+  .brandmark{position:fixed;left:26px;bottom:16px;z-index:20;display:flex;align-items:center;gap:9px;font-weight:800;font-size:14px;color:var(--muted);text-decoration:none}
+  a.brandmark:hover{color:var(--ink)} .brandmark .back{font-weight:600;opacity:.75;font-size:13px}
+  a.brandmark:hover .back{color:var(--brand);opacity:1}
+  .brandmark .m{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;color:#06101f;font-weight:900}
+  @media(max-width:820px){.two-col,.g2,.g3,.g4,.board{grid-template-columns:1fr}.lblrow{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- 1 — CAPA -->
+  <section class="slide active center">
+    <div class="title-wrap">
+      <div class="kicker">Climbe Squad-X · Apresentação final individual</div>
+      <h1>Marcos Guimarães<br><span style="background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent">Backend, Infraestrutura & Gestão do Squad</span></h1>
+      <p class="lead" style="margin-top:20px">Do planejamento do projeto e organização do time à construção da API que sustenta toda a regra de negócio da Climbe.</p>
+      <div style="display:flex;gap:9px;margin-top:24px;flex-wrap:wrap">
+        <span class="badge-repo">climbe-api</span>
+        <span class="badge-repo app">climbe-app</span>
+        <span class="badge-repo" style="background:rgba(245,181,74,.12);border-color:rgba(245,181,74,.3);color:#ffd98a">GitHub Project · Climbe Squad-X</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 — MEUS 3 PILARES -->
+  <section class="slide">
+    <div class="kicker">Minha atuação</div>
+    <h2>Três frentes de responsabilidade</h2>
+    <div class="grid g3" style="flex:1;align-content:center">
+      <div class="card pillar"><div class="ic g">🗂️</div><h3>Gestão do squad</h3><p class="muted">Planejei o projeto, criei o backlog e o board, defini prioridades e conduzi o processo de trabalho dos 4 devs.</p></div>
+      <div class="card pillar"><div class="ic i">⚙️</div><h3>Infraestrutura</h3><p class="muted">Ambiente reproduzível, banco, migrations, health checks e a base técnica dos dois repositórios.</p></div>
+      <div class="card pillar"><div class="ic b">🧠</div><h3>Backend</h3><p class="muted">A API completa: autenticação, RBAC e todo o núcleo de negócio — cadastros, propostas, contratos e documentos.</p></div>
+    </div>
+    <p class="footnote">Comecei pela base (gestão + infra) porque foi ela que permitiu o time trabalhar em paralelo com previsibilidade.</p>
+  </section>
+
+  <!-- 3 — GESTÃO: BOARD -->
+  <section class="slide">
+    <div class="kicker g3c">Gestão do squad</div>
+    <h2>Backlog e fluxo de trabalho automatizado</h2>
+    <div class="board">
+      <div class="lane">
+        <div class="lane-head"><span class="lane-dot" style="background:#8b949e"></span> TO DO <span class="lane-count">11</span></div>
+        <p>Tudo que há pra fazer. O dev escolhe uma task e <b style="color:var(--ink)">assina com seu usuário do GitHub</b>. Ao abrir o PR e marcar o número da task com uma hashtag, o card anda sozinho pra próxima raia.</p>
+      </div>
+      <div class="lane">
+        <div class="lane-head"><span class="lane-dot" style="background:#3fb950"></span> In Review <span class="lane-count">5 / 3</span></div>
+        <p>Fase de aprovação. Os PRs abertos ficam aqui; quando o PR é <b style="color:var(--ink)">mergeado</b>, a task é puxada automaticamente pra próxima raia.</p>
+      </div>
+      <div class="lane">
+        <div class="lane-head"><span class="lane-dot" style="background:#a371f7"></span> Done <span class="lane-count">34</span></div>
+        <p>Card amarrado ao PR pela hashtag. No merge, ele vem pra cá sozinho — fechando o ciclo sem ninguém arrastar nada.</p>
+        <div class="mini"><span class="chk">✔</span> climbe-app #32</div>
+      </div>
+    </div>
+    <p class="footnote">GitHub Project “Climbe Squad-X” — cards são as issues dos dois repos. Configurei a automação PR ↔ card, então o board reflete o estado real sem trabalho manual.</p>
+  </section>
+
+  <!-- 4 — GESTÃO: PRIORIZAÇÃO + PROCESSO -->
+  <section class="slide">
+    <div class="kicker g3c">Gestão do squad</div>
+    <h2>Priorização e metodologia</h2>
+    <div class="two-col">
+      <div class="col">
+        <h3 style="margin-bottom:10px">Labels de prioridade (MoSCoW)</h3>
+        <div class="labels">
+          <div class="lblrow"><span class="lbl must">MUST - 1</span><span class="desc">Tem que ter</span></div>
+          <div class="lblrow"><span class="lbl should">SHOULD - 2</span><span class="desc">Importante, mas pode ficar pra última semana</span></div>
+          <div class="lblrow"><span class="lbl could">COULD - 3</span><span class="desc">Se sobrar tempo</span></div>
+          <div class="lblrow"><span class="lbl backend">Backend</span><span class="desc">Frente / área da task</span></div>
+          <div class="lblrow"><span class="lbl infra">Setup-Infra</span><span class="desc">Configuração e base do projeto</span></div>
+          <div class="lblrow"><span class="lbl doc">documentation</span><span class="desc">Documentação</span></div>
+        </div>
+      </div>
+      <div class="col">
+        <h3 style="margin-bottom:10px">Processo que defini</h3>
+        <ul class="feat" style="--x:0">
+          <li><b>Roadmap em ondas</b> — Semana 1 Fundação · Semana 2 Núcleo do negócio · Semana 3 Integrações.</li>
+          <li><b>Spec-driven (OpenSpec)</b> — cada capability nasce como proposal · design · tasks · specs antes do código.</li>
+          <li><b>1 PR por capability</b> — implementa, sincroniza a spec e arquiva no mesmo PR.</li>
+          <li><b>Escopo consciente</b> — o que fica de fora (WON'T) foi decidido e documentado, não esquecido.</li>
+          <li><b>Revisão e merge</b> das PRs do time nos dois repositórios.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="footnote">Prioridade + frente em cada issue = o time sabia o que atacar primeiro e ninguém dependia de mim pra saber o próximo passo.</p>
+  </section>
+
+  <!-- 5 — INFRA -->
+  <section class="slide">
+    <div class="kicker g2c">Infraestrutura</div>
+    <h2>A base técnica dos dois repositórios</h2>
+    <div class="two-col">
+      <div class="col">
+        <ul class="feat infra">
+          <li><b>Docker Compose + PostgreSQL</b> — ambiente reproduzível, sobe igual em qualquer máquina.</li>
+          <li><b>Alembic</b> — migrations versionadas + seeds do domínio real (cargos, serviços) e admin inicial idempotente.</li>
+          <li><b>Onboarding em 1 comando</b> — <code>alembic upgrade head</code> cria schema, seeds e admin do zero.</li>
+        </ul>
+      </div>
+      <div class="col">
+        <ul class="feat infra">
+          <li><b>Health checks</b> — <code>/health</code> e <code>/health/db</code> para liveness/readiness.</li>
+          <li><b>Config por ambiente</b> — segredos fora do código (.env), CORS liberado pro frontend.</li>
+          <li><b>Padronização</b> — Ruff (lint/format), estrutura modular de pastas e convenções de PR.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card" style="margin-top:20px;border-color:rgba(35,214,168,.3)">
+      <h3 style="display:flex;align-items:center;gap:10px"><span class="pr">climbe-app #24</span> Infra não parou no backend</h3>
+      <p class="muted" style="margin-top:6px">Também atuei no frontend garantindo a consistência entre os dois repos: alinhei os nomes e referências (<code>climbe-app</code> ↔ <code>climbe-api</code>), pré-requisito pra integração e pro deploy não quebrar.</p>
+    </div>
+  </section>
+
+  <!-- 6 — DIVISOR BACKEND -->
+  <section class="slide center">
+    <div class="title-wrap">
+      <div class="kicker">Parte técnica</div>
+      <h1>O Backend,<br>etapa por etapa.</h1>
+      <p class="lead" style="margin-top:18px">Cada avanço da API virou um PR revisável e uma capability arquivada. São <b style="color:var(--ink)">9 PRs</b> que levam da estrutura vazia à regra de negócio completa.</p>
+    </div>
+  </section>
+
+  <!-- 7 — BACKEND PELOS PRs -->
+  <section class="slide">
+    <div class="kicker b" style="color:var(--brand)">climbe-api · trajetória</div>
+    <h2>Construção da API em 9 PRs</h2>
+    <div class="two-col">
+      <div class="col">
+        <div class="prrow"><span class="pr">#6</span><div><b>Setup spec-driven</b><small>Projeto configurado com OpenSpec e convenções.</small></div></div>
+        <div class="prrow"><span class="pr">#7</span><div><b>Estrutura base da API</b><small>FastAPI, health checks e Alembic.</small></div></div>
+        <div class="prrow"><span class="pr">#18</span><div><b>Specs arquivadas</b><small>api-foundation + database publicadas.</small></div></div>
+        <div class="prrow"><span class="pr">#25</span><div><b>Modelos + migration + seeds</b><small>As 15 entidades do ER em SQLAlchemy.</small></div></div>
+        <div class="prrow"><span class="pr">#26</span><div><b>Autenticação JWT + RBAC</b><small>Login email/senha, bcrypt, papéis.</small></div></div>
+      </div>
+      <div class="col">
+        <div class="prrow"><span class="pr">#27</span><div><b>CRUD de usuários e cargos</b><small>Validação de CPF, e-mail único, soft delete.</small></div></div>
+        <div class="prrow"><span class="pr">#28</span><div><b>CRUD de empresas</b><small>Validação de CNPJ e vínculo de serviços.</small></div></div>
+        <div class="prrow"><span class="pr">#29</span><div><b>Propostas</b><small>Máquina de estados rascunho → enviada → aprovada/recusada.</small></div></div>
+        <div class="prrow"><span class="pr">#30</span><div><b>Contrato automático</b><small>Gerado ao aprovar a proposta, na mesma transação.</small></div></div>
+        <div class="prrow" style="border:0"><span class="pr" style="background:rgba(35,214,168,.14);border-color:rgba(35,214,168,.32);color:#bff3e4">+doc</span><div><b>documentos</b><small>Upload e validação (pendente → válido/inválido).</small></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 — DESTAQUES TÉCNICOS -->
+  <section class="slide">
+    <div class="kicker b" style="color:var(--brand)">Decisões que valem destacar</div>
+    <h2>Destaques técnicos do backend</h2>
+    <div class="grid g2" style="flex:1;align-content:center">
+      <div class="card"><h3 style="color:var(--brand2)">Contrato gerado por evento</h3><p class="muted">Aprovar a proposta cria o contrato automaticamente — <b style="color:var(--ink)">idempotente</b> (1:1) e na <b style="color:var(--ink)">mesma transação</b>: ou grava tudo, ou nada.</p></div>
+      <div class="card"><h3 style="color:var(--brand)">Máquina de estados</h3><p class="muted">Transições da proposta são explícitas; pular etapa retorna <b style="color:var(--ink)">409</b>. Integridade do fluxo garantida no código.</p></div>
+      <div class="card"><h3 style="color:var(--accent)">RBAC: papel ≠ cargo</h3><p class="muted">Separei o cargo formal (CEO, Compliance…) do papel de acesso (admin/analista). Controle via dependency <code>require_role</code>.</p></div>
+      <div class="card"><h3 style="color:var(--brand2)">Robustez</h3><p class="muted">CPF/CNPJ com dígito verificador, senha em bcrypt, upload sem path traversal e erros padronizados <code>{detail, code}</code>.</p></div>
+    </div>
+  </section>
+
+  <!-- 9 — NÚMEROS -->
+  <section class="slide">
+    <div class="kicker">Em números</div>
+    <h2>O que entreguei</h2>
+    <div class="grid g4" style="flex:1;align-content:center">
+      <div class="card stat"><span class="num">9</span><span class="lbl2">PRs no backend</span></div>
+      <div class="card stat"><span class="num">38</span><span class="lbl2">endpoints em 9 domínios</span></div>
+      <div class="card stat"><span class="num">70</span><span class="lbl2">testes automatizados</span></div>
+      <div class="card stat"><span class="num">15</span><span class="lbl2">entidades modeladas</span></div>
+    </div>
+    <p class="footnote">Mais o backlog e o board de todo o squad, a infra dos dois repositórios e a revisão das PRs do time.</p>
+  </section>
+
+  <!-- 10 — FECHAMENTO -->
+  <section class="slide center">
+    <div class="title-wrap">
+      <div class="kicker">Encerramento</div>
+      <h1>Planejei, organizei<br>e construí a base.</h1>
+      <p class="lead" style="margin-top:18px">Da gestão do squad à API que roda ponta a ponta: uma fundação sólida, testada e documentada — pronta pra evoluir nas integrações da próxima fase.</p>
+      <div style="display:flex;gap:9px;margin-top:24px;flex-wrap:wrap">
+        <span class="badge-repo">github.com/marcos-grocha/climbe-api</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="bar" id="bar"></div>
+<a class="brandmark" href="../index.html" title="Voltar ao portal"><span class="m">C</span> Climbe Squad-X <span class="back">· ← Portal</span></a>
+<div class="hud"><span id="counter">1 / 10</span><span class="k">← →</span></div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  let i=0;
+  function show(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    document.getElementById('counter').textContent=(i+1)+' / '+slides.length;
+    document.getElementById('bar').style.width=((i+1)/slides.length*100)+'%';
+  }
+  document.addEventListener('keydown',e=>{
+    if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)){e.preventDefault();show(i+1)}
+    else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+    else if(e.key==='Home')show(0); else if(e.key==='End')show(slides.length-1);
+  });
+  document.addEventListener('click',e=>{
+    if(e.target.closest('a')) return;
+    if(e.clientX < window.innerWidth*0.25) show(i-1); else show(i+1);
+  });
+  show(0);
+</script>
+</body>
+</html>
